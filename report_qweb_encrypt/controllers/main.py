@@ -27,6 +27,7 @@ class ReportController(report.ReportController):
                 if "encrypt_password" in context:
                     Report = request.env["ir.actions.report"]
                     data = result.get_data()
-                    encrypted_data = Report._encrypt_pdf(data, context["encrypt_password"])
+                    encrypted_data = Report._encrypt_pdf(
+                        data, context["encrypt_password"])
                     result.set_data(encrypted_data)
         return result

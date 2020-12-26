@@ -20,14 +20,10 @@ class IrActionsReport(models.Model):
 
     _inherit = 'ir.actions.report'
 
-    encrypt = fields.Boolean(
+    encrypt = fields.Selection(
+        [("manual", "Manual Input Password"),
+         ("auto", "Auto Generated Password")],
         string="Encryption",
-    )
-    encrypt_password_option = fields.Selection(
-        [("manual", "Manual Input"),
-         ("auto", "Auto Generated")],
-        string="Password Option",
-        required=True,
         default="manual",
         help="* Manual Input: allow user to key in password on the fly, "
         "but available only on document print action.\n"
@@ -47,18 +43,17 @@ class IrActionsReport(models.Model):
 
     def _get_pdf_password(self, res_id):
         encrypt_password = False
-        if self.encrypt:
-            if self.encrypt_password_option == "manual":
-                pass  # for manual case, encryption will be done by report_download()
-            elif self.encrypt_password_option == "auto":
-                obj = self.env[self.model].browse(res_id)
-                try:
-                    encrypt_password = safe_eval(self.encrypt_password or "",
-                                                {'object': obj, 'time': time})
-                except ValueError:
-                    raise ValidationError(
-                        _("Python code used for encryption password is invalid.\n%s")
-                        % self.encrypt_password)
+        if self.encrypt == "manual":
+            pass  # for manual case, encryption will be done by report_download()
+        elif self.encrypt == "auto" and self.encrypt_password:
+            obj = self.env[self.model].browse(res_id)
+            try:
+                encrypt_password = safe_eval(self.encrypt_password,
+                                             {'object': obj, 'time': time})
+            except ValueError:
+                raise ValidationError(
+                    _("Python code used for encryption password is invalid.\n%s")
+                    % self.encrypt_password)
         return encrypt_password
 
     def _encrypt_pdf(self, data, password):

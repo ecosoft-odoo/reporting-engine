@@ -14,10 +14,9 @@
                 <label for="encrypt" attrs="{'invisible': [('report_type', 'not in', ('qweb-pdf', 'qweb-html'))]}"/>
                 <div name="encrypt" attrs="{'invisible': [('report_type', 'not in', ('qweb-pdf', 'qweb-html'))]}">
                     <field name="encrypt"/>
-                    <field name="encrypt_password_option" style="width:50%"
-                        attrs="{'invisible': [('encrypt', '=', False)]}"/>
-                    <field name="encrypt_password" placeholder="I.e., (object.default_code or object.vat or 'secretcode')"
-                        attrs="{'invisible': ['|', ('encrypt', '=', False), ('encrypt_password_option', '!=', 'auto')]}"/>
+                    <field name="encrypt_password"
+                        attrs="{'invisible': [('encrypt', '!=', 'auto')]}"
+                        placeholder="python syntax, i.e., (object.default_code or 'secretcode')"/>
                 </div>
             </field>
         </field>
