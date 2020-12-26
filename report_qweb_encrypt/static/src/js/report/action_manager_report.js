@@ -11,7 +11,7 @@ odoo.define("report_qweb_encrypt.Dialog", function (require) {
     var _t = core._t;
 
     var EncryptDialog = Dialog.extend({
-        events: _.extend({} , Dialog.prototype.events, {
+        events: _.extend({}, Dialog.prototype.events, {
             change: '_onChange',
         }),
         _setValue: function () {
@@ -49,7 +49,10 @@ odoo.define("report_qweb_encrypt.Dialog", function (require) {
 
     ActionManager.include({
         _executeReportAction: function (action, options, password) {
-            if (action.encrypt && password === undefined) {
+            if (action.encrypt &&
+                    action.report_type === 'qweb-pdf' &&
+                    action.encrypt_password_option === 'manual' &&
+                    password === undefined) {
                 EncryptDialog.askPassword(this, action, options);
                 return $.Deferred()
             }
