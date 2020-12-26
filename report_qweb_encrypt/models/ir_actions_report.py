@@ -17,8 +17,7 @@ except ImportError as err:
 
 
 class IrActionsReport(models.Model):
-
-    _inherit = 'ir.actions.report'
+    _inherit = "ir.actions.report"
 
     encrypt = fields.Selection(
         [("manual", "Manual Input Password"),
@@ -50,7 +49,7 @@ class IrActionsReport(models.Model):
             try:
                 encrypt_password = safe_eval(self.encrypt_password,
                                              {'object': obj, 'time': time})
-            except ValueError:
+            except:
                 raise ValidationError(
                     _("Python code used for encryption password is invalid.\n%s")
                     % self.encrypt_password)
