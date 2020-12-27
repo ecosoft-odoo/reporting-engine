@@ -24,10 +24,10 @@ class IrActionsReport(models.Model):
          ("auto", "Auto Generated Password")],
         string="Encryption",
         default="manual",
-        help="* Manual Input: allow user to key in password on the fly, "
-        "but available only on document print action.\n"
-        "* Auto Generated: system will auto encrypt password when PDF created, "
-        "based on provided python syntax."
+        help="* Manual Input Password: allow user to key in password on the fly. "
+        "This option available only on document print action.\n"
+        "* Auto Generated Password: system will auto encrypt password when PDF "
+        "created, based on provided python syntax."
     )
     encrypt_password = fields.Char(
         help="Python code syntax to gnerate password.",
@@ -43,7 +43,12 @@ class IrActionsReport(models.Model):
     def _get_pdf_password(self, res_id):
         encrypt_password = False
         if self.encrypt == "manual":
-            pass  # for manual case, encryption will be done by report_download()
+            # If use document print action, report_download() is called,
+            # but that can't pass context (encrypt_password) here.
+            # As such, file will be encrypted by report_download() again.
+            # --
+            # Following is used just in case when context is passed in.
+            encrypt_password = self._context.get("encrypt_password", False)
         elif self.encrypt == "auto" and self.encrypt_password:
             obj = self.env[self.model].browse(res_id)
             try:
