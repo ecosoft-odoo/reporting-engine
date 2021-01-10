@@ -28,6 +28,7 @@ env:
   global:
     - VERSION="14.0" TESTS="0" LINT_CHECK="0" MAKEPOT="0"
     - MQT_DEP=PIP
+    - WKHTMLTOPDF_VERSION="0.12.4"
 
 install:
   - git clone --depth=1 https://github.com/OCA/maintainer-quality-tools.git
